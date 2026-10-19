@@ -8,6 +8,7 @@ import { createArcball } from './arcball.js';
 import { createSelection } from './selection.js';
 import { createMatrixPanel, createTreePanel } from './panels.js';
 import { createDisplayModes } from './displayModes.js';
+import { createModelViewer } from './models.js';
 import { createUI } from './ui.js';
 
 const stage = createStage(document.getElementById('viewport'));
@@ -29,6 +30,7 @@ app.tree.build(car.root);
 app.selection.onChange((node) => { matrixPanel.show(node); app.tree.highlight(node); });
 app.display = createDisplayModes(stage.scene);
 app.display.setRoot(car.root);
+app.models = createModelViewer(app, document.getElementById('model-info'));
 app.ui = createUI(app);
 
 let last = performance.now();

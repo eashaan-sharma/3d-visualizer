@@ -17,7 +17,7 @@ export function ownerOf(obj) {
 }
 
 // Meshes that belong to this node itself, not to child parts below it.
-function ownMeshes(node, out = []) {
+export function ownMeshes(node, out = []) {
   if (node.isMesh) out.push(node);
   for (const child of node.children) {
     if (!isSelectable(child) && !child.userData.helper) ownMeshes(child, out);

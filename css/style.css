@@ -150,3 +150,30 @@ html, body {
 
 .mp-info { margin-top: 8px; font-size: 0.9rem; color: var(--muted); max-width: 640px; }
 .mp-info b { color: var(--text); }
+
+#model-info {
+  top: 16px;
+  left: 390px; /* right of the title, left of the control panel */
+  max-width: min(540px, calc(100vw - 740px));
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+#model-info small { color: var(--muted); }
+.warn { color: #ffb347; font-weight: 700; }
+
+/* Drop zone hint while a file is dragged over the window. */
+body.dropping::after {
+  content: "Drop an .obj file to load it";
+  position: fixed;
+  inset: 24px;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  font-weight: 700;
+  border: 3px dashed #ffd23f;
+  border-radius: 16px;
+  background: rgba(10, 12, 16, 0.6);
+  pointer-events: none;
+}

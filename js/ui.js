@@ -3,6 +3,16 @@
 import GUI from 'lil-gui';
 import { MODES } from './displayModes.js';
 import { DEFAULT_LIVERY } from './car/materials.js';
+import { CAR, SAMPLES } from './models.js';
+import { exportOBJ } from './objExporter.js';
+
+// Save text as a file through the browser's normal download.
+function download(text, filename) {
+  const url = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+  const a = Object.assign(document.createElement('a'), { href: url, download: filename });
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000); // give the browser time to start the download
+}
 
 export function createUI(app) {
   const gui = new GUI({ title: 'Controls', width: 330 });
@@ -42,6 +52,22 @@ export function createUI(app) {
   const paint = app.car.materials.paint;
   const look = { livery: DEFAULT_LIVERY };
   disp.addColor(look, 'livery').name('Livery colour').onChange((c) => paint.color.set(c));
+
+  const mdl = gui.addFolder('Model (.obj)');
+  const RIGGING_TIP = 'An .obj file stores geometry only: vertices, normals, faces and named groups. '
+    + 'It has no place for the scene graph (parent/child links), pivots or joint axes. That rigging lives in our code, '
+    + 'so after a reload the parts come back as static pieces that cannot steer, spin or explode.';
+  mdl.add(app.models.state, 'model', [CAR, ...Object.keys(SAMPLES)]).name('Show').onChange((v) => app.models.choose(v));
+  const exp = mdl.add({ exportCar: () => download(exportOBJ(app.car.root), 'f1-car.obj') }, 'exportCar').name('Export car as .obj');
+  const rel = mdl.add({ reload: () => reloadExportedCar() }, 'reload').name('Reload exported car');
+  for (const c of [exp, rel]) c.domElement.title = RIGGING_TIP;
+  mdl.add({ hint: 'or drop an .obj file on the page' }, 'hint').name('Tip').disable();
+
+  function reloadExportedCar() {
+    app.models.state.model = 'Exported car';
+    app.models.showText(exportOBJ(app.car.root), 'f1-car.obj (re-imported)');
+    refresh();
+  }
 
   function refresh() {
     gui.controllersRecursive().forEach((c) => c.updateDisplay());
