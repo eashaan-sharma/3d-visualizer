@@ -5,6 +5,8 @@ import { updateRig } from './car/rig.js';
 import { createKinematics } from './kinematics.js';
 import { createExplode } from './explode.js';
 import { createArcball } from './arcball.js';
+import { createSelection } from './selection.js';
+import { createMatrixPanel, createTreePanel } from './panels.js';
 import { createUI } from './ui.js';
 
 const stage = createStage(document.getElementById('viewport'));
@@ -18,6 +20,12 @@ const app = {
   explode: createExplode(),
   arcball: createArcball({ camera: stage.camera, dom: stage.renderer.domElement, overlay: document.getElementById('arcball-overlay') }),
 };
+app.activeRoot = car.root; // what the picker and tree show (M8 swaps in loaded .obj models)
+app.selection = createSelection({ camera: stage.camera, dom: stage.renderer.domElement, getRoot: () => app.activeRoot });
+const matrixPanel = createMatrixPanel(document.getElementById('matrix-panel'));
+app.tree = createTreePanel(document.getElementById('tree-panel'), (node) => app.selection.select(node));
+app.tree.build(car.root);
+app.selection.onChange((node) => { matrixPanel.show(node); app.tree.highlight(node); });
 app.ui = createUI(app);
 
 let last = performance.now();
@@ -28,6 +36,8 @@ function tick(now) {
   app.explode.update(dt);
   updateRig(car.root, app.explode.state.amount);
   app.arcball.update(dt);
+  stage.scene.updateMatrixWorld(); // world = parent x local for every node, so the panel reads fresh values
+  matrixPanel.update(dt);
   stage.renderer.render(stage.scene, stage.camera);
 }
 stage.renderer.setAnimationLoop(tick);
