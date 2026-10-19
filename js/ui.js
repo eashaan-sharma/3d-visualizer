@@ -19,6 +19,11 @@ export function createUI(app) {
     refresh();
   });
 
+  const ex = gui.addFolder('Exploded view');
+  // listen() re-reads the value every frame so the slider follows the pit stop animation.
+  ex.add(app.explode.state, 'amount', 0, 1, 0.01).name('Explode').listen().onChange(() => app.explode.cancel());
+  ex.add({ pit: () => app.explode.pitStop() }, 'pit').name('Pit stop! (P)');
+
   function refresh() {
     gui.controllersRecursive().forEach((c) => c.updateDisplay());
   }
