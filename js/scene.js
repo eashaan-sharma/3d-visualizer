@@ -69,8 +69,8 @@ export function createStage(container) {
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
-  window.addEventListener('resize', resize);
-  resize();
+  // Watches the container itself, so it also fires when panels or the browser window change size.
+  new ResizeObserver(resize).observe(container);
 
   return { renderer, scene, camera, keyLight, ground, grid };
 }
