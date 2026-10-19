@@ -286,3 +286,13 @@ body:has(#tour:not([hidden])) .lil-gui.lil-root.lil-auto-place { max-height: cal
 }
 
 #fps[hidden] { display: none; }
+
+/* Bigger text on large (projector) resolutions. Panels are sized in rem, so they grow too. */
+@media (min-width: 1600px) {
+  html { font-size: 18px; }
+  #tree-panel { width: 280px; }
+  #legend { width: 400px; }
+  #tour { width: 620px; }
+  body .lil-gui { --font-size: 16px; --input-font-size: 16px; --widget-height: 30px; }
+  body .lil-gui.lil-root > .lil-title { font-size: 17px; }
+}
