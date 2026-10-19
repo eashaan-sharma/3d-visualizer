@@ -35,8 +35,9 @@ export function createStage(container) {
   keyLight.castShadow = true;
   keyLight.shadow.mapSize.set(2048, 2048);
   const s = keyLight.shadow.camera;
-  s.left = -4; s.right = 4; s.top = 4; s.bottom = -4; s.near = 1; s.far = 20;
+  s.left = -3.6; s.right = 3.6; s.top = 3.6; s.bottom = -3.6; s.near = 2; s.far = 16;
   keyLight.shadow.bias = -0.0004;
+  keyLight.shadow.radius = 3; // blur the shadow edge over a few texels
   keyLight.shadow.normalBias = 0.02;
   scene.add(keyLight);
 

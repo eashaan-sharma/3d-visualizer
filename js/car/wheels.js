@@ -5,8 +5,7 @@
 // Because the wheel is a CHILD of the upright, steering turns the wheel's spin axis with it.
 import * as THREE from 'three';
 import { addJoint } from './rig.js';
-import { wing, plate } from './shapes.js';
-import { SLOT, slotList } from './materials.js';
+import { plate } from './shapes.js';
 import { FRONT_AXLE_X, REAR_AXLE_X, WHEEL_R, RIM_R, FRONT_TRACK, REAR_TRACK, FRONT_TYRE_W, REAR_TYRE_W, KINGPIN } from './dims.js';
 
 // One wheel built in its own frame: center at the origin, axle along Z, outer face toward +Z.
@@ -39,7 +38,6 @@ function makeWheel(mats, width) {
 }
 
 export function buildCorners({ mats, part, mesh, local }, chassis) {
-  const slots = slotList(mats);
 
   for (const [side, s] of [['L', -1], ['R', 1]]) {
     // Front: the upright pivots about the kingpin, which sits inboard of the wheel center,
@@ -48,13 +46,14 @@ export function buildCorners({ mats, part, mesh, local }, chassis) {
     addJoint(upright, 'steer', 'y');
     mesh(upright, new THREE.CylinderGeometry(0.17, 0.17, 0.13, 32).rotateX(Math.PI / 2).translate(FRONT_AXLE_X, WHEEL_R, 0.665 * s), mats.carbon);
     mesh(upright, new THREE.BoxGeometry(0.08, 0.42, 0.05).translate(FRONT_AXLE_X, WHEEL_R, 0.63 * s), mats.metal);
-    // Wheel-arch winglet: steers with the wheel (child of the upright) but does not spin.
-    mesh(upright, wing({
-      span: 0.24, steps: 4, n: 20,
-      profile: () => ({ xLE: FRONT_AXLE_X + 0.16, yLE: 0.765, chord: 0.30, aoa: 0.18, thick: 0.1, camber: -0.05 }),
-      materialAt: () => SLOT.CARBON,
-    }).translate(0, 0, 0.75 * s), slots);
-    mesh(upright, plate([[1.78, 0.5], [1.56, 0.5], [1.52, 0.77], [1.80, 0.79]], 0.01, 0.63 * s), mats.carbon);
+    // Wheel winglet: a low curved fairing hugging the top of the tyre, held by a thin web from
+    // the brake drum. It steers with the wheel (child of the upright) but does not spin.
+    // An open cylinder slice around the axle: theta = PI is straight up after rotateX.
+    const arc = 0.95;
+    mesh(upright, new THREE.CylinderGeometry(WHEEL_R + 0.022, WHEEL_R + 0.022, 0.15, 20, 1, true, Math.PI - arc * 0.6, arc)
+      .rotateX(Math.PI / 2).translate(FRONT_AXLE_X, WHEEL_R, 0.745 * s), mats.carbonShell);
+    mesh(upright, new THREE.RingGeometry(0.17, WHEEL_R + 0.024, 20, 1, Math.PI / 2 - arc * 0.4, arc)
+      .translate(FRONT_AXLE_X, WHEEL_R, 0.668 * s), mats.carbonShell);
 
     const fw = part(upright, `F${side} wheel`, [FRONT_AXLE_X, WHEEL_R, FRONT_TRACK * s], { explodeDir: [0, 0, s], explodeDist: 0.55 });
     addJoint(fw, 'spin', 'z');

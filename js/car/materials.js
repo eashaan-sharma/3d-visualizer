@@ -2,14 +2,16 @@
 // of car paint that gives the sharp reflections.
 import * as THREE from 'three';
 
-export const DEFAULT_LIVERY = '#c4121a';
+export const DEFAULT_LIVERY = '#8a0b12';
 
 export function createMaterials() {
   return {
-    paint: new THREE.MeshPhysicalMaterial({ color: DEFAULT_LIVERY, roughness: 0.38, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.08 }),
+    // Deep red with a soft satin finish: rougher base and a weaker, blurrier clearcoat.
+    paint: new THREE.MeshPhysicalMaterial({ color: DEFAULT_LIVERY, roughness: 0.55, metalness: 0.05, clearcoat: 0.35, clearcoatRoughness: 0.35 }),
     white: new THREE.MeshPhysicalMaterial({ color: '#f1f1f1', roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.1 }),
-    carbon: new THREE.MeshPhysicalMaterial({ color: '#17181c', roughness: 0.5, metalness: 0.3, clearcoat: 0.3, clearcoatRoughness: 0.35 }),
-    floor: new THREE.MeshStandardMaterial({ color: '#141518', roughness: 0.7, metalness: 0.2 }),
+    carbon: new THREE.MeshPhysicalMaterial({ color: '#111215', roughness: 0.45, metalness: 0.1, clearcoat: 0.3, clearcoatRoughness: 0.35, envMapIntensity: 0.5 }),
+    carbonShell: new THREE.MeshPhysicalMaterial({ color: '#111215', roughness: 0.45, metalness: 0.1, clearcoat: 0.3, clearcoatRoughness: 0.35, side: THREE.DoubleSide, envMapIntensity: 0.5 }),
+    floor: new THREE.MeshStandardMaterial({ color: '#0e0f12', roughness: 0.75, metalness: 0, envMapIntensity: 0.2 }),
     matte: new THREE.MeshStandardMaterial({ color: '#0a0a0c', roughness: 0.95 }),
     tyre: new THREE.MeshStandardMaterial({ color: '#16161a', roughness: 0.82 }),
     tyreBand: new THREE.MeshStandardMaterial({ color: '#f4c20d', roughness: 0.6 }),
