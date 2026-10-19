@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>F1 Scene Graph Visualizer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- The import map lets modules write `import * as THREE from 'three'` while the files live in /lib. -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./lib/three/three.module.js",
+        "three/addons/": "./lib/three/addons/",
+        "lil-gui": "./lib/lil-gui/lil-gui.esm.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="viewport"></div>
+  <header id="title">
+    <h1>F1 Scene Graph Visualizer</h1>
+    <p>Scene graphs · forward kinematics · arcball · .obj</p>
+  </header>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

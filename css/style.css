@@ -1,0 +1,60 @@
+/* Dark, high-contrast theme sized for a projector. */
+:root {
+  --bg: #0b0e13;
+  --panel: rgba(16, 20, 27, 0.92);
+  --border: #2c3442;
+  --text: #f2f4f8;
+  --muted: #a9b3c4;
+  --accent: #ff3b3b;
+  --font: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --mono: Consolas, "Cascadia Mono", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+}
+
+#viewport {
+  position: fixed;
+  inset: 0;
+}
+
+#viewport canvas { display: block; }
+
+#title {
+  position: fixed;
+  top: 16px;
+  left: 20px;
+  pointer-events: none;
+}
+
+#title h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+#title h1::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 1.2em;
+  margin-right: 10px;
+  vertical-align: -0.2em;
+  background: var(--accent);
+}
+
+#title p {
+  margin: 4px 0 0 16px;
+  color: var(--muted);
+  font-size: 1rem;
+}
