@@ -1,6 +1,8 @@
 // Control panel (lil-gui). Each control simply writes into a state object that the
 // kinematics / explode / camera modules read every frame.
 import GUI from 'lil-gui';
+import { MODES } from './displayModes.js';
+import { DEFAULT_LIVERY } from './car/materials.js';
 
 export function createUI(app) {
   const gui = new GUI({ title: 'Controls', width: 330 });
@@ -32,6 +34,14 @@ export function createUI(app) {
   cam.add({ reset: () => { arc.autoRotate = false; app.arcball.reset(); } }, 'reset').name('Reset view');
   // Any drag, scroll or pan pauses the turntable; only A (or the checkbox) restarts it.
   app.arcball.onInteract = () => { arc.autoRotate = false; };
+
+  const disp = gui.addFolder('Display');
+  const d = app.display.state;
+  disp.add(d, 'mode', MODES).name('Mode').onChange(() => app.display.apply());
+  disp.add(d, 'pivots').name('Show pivots').onChange(() => app.display.apply());
+  const paint = app.car.materials.paint;
+  const look = { livery: DEFAULT_LIVERY };
+  disp.addColor(look, 'livery').name('Livery colour').onChange((c) => paint.color.set(c));
 
   function refresh() {
     gui.controllersRecursive().forEach((c) => c.updateDisplay());

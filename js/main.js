@@ -7,6 +7,7 @@ import { createExplode } from './explode.js';
 import { createArcball } from './arcball.js';
 import { createSelection } from './selection.js';
 import { createMatrixPanel, createTreePanel } from './panels.js';
+import { createDisplayModes } from './displayModes.js';
 import { createUI } from './ui.js';
 
 const stage = createStage(document.getElementById('viewport'));
@@ -26,6 +27,8 @@ const matrixPanel = createMatrixPanel(document.getElementById('matrix-panel'));
 app.tree = createTreePanel(document.getElementById('tree-panel'), (node) => app.selection.select(node));
 app.tree.build(car.root);
 app.selection.onChange((node) => { matrixPanel.show(node); app.tree.highlight(node); });
+app.display = createDisplayModes(stage.scene);
+app.display.setRoot(car.root);
 app.ui = createUI(app);
 
 let last = performance.now();
@@ -38,6 +41,7 @@ function tick(now) {
   app.arcball.update(dt);
   stage.scene.updateMatrixWorld(); // world = parent x local for every node, so the panel reads fresh values
   matrixPanel.update(dt);
+  app.display.update();
   stage.renderer.render(stage.scene, stage.camera);
 }
 stage.renderer.setAnimationLoop(tick);
