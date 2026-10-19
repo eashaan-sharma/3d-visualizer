@@ -11,7 +11,7 @@ export function createMaterials() {
     white: new THREE.MeshPhysicalMaterial({ color: '#f1f1f1', roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.1 }),
     carbon: new THREE.MeshPhysicalMaterial({ color: '#111215', roughness: 0.45, metalness: 0.1, clearcoat: 0.3, clearcoatRoughness: 0.35, envMapIntensity: 0.5 }),
     carbonShell: new THREE.MeshPhysicalMaterial({ color: '#111215', roughness: 0.45, metalness: 0.1, clearcoat: 0.3, clearcoatRoughness: 0.35, side: THREE.DoubleSide, envMapIntensity: 0.5 }),
-    floor: new THREE.MeshStandardMaterial({ color: '#0e0f12', roughness: 0.75, metalness: 0, envMapIntensity: 0.2 }),
+    floor: new THREE.MeshPhysicalMaterial({ color: '#0e0f12', roughness: 0.9, specularIntensity: 0.25, envMapIntensity: 0.2 }),
     matte: new THREE.MeshStandardMaterial({ color: '#0a0a0c', roughness: 0.95 }),
     tyre: new THREE.MeshStandardMaterial({ color: '#16161a', roughness: 0.82 }),
     tyreBand: new THREE.MeshStandardMaterial({ color: '#f4c20d', roughness: 0.6 }),

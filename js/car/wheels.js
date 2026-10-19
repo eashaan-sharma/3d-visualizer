@@ -57,6 +57,9 @@ export function buildCorners({ mats, part, mesh, local }, chassis) {
 
     const fw = part(upright, `F${side} wheel`, [FRONT_AXLE_X, WHEEL_R, FRONT_TRACK * s], { explodeDir: [0, 0, s], explodeDist: 0.55 });
     addJoint(fw, 'spin', 'z');
+    // Only used by the "wrong transform order" demo: steering placed AFTER spin in the list,
+    // so local = R_spin x R_steer (steer applied first, then spun about the fixed axle).
+    addJoint(fw, 'steerWrong', 'y');
     const frontWheel = makeWheel(mats, FRONT_TYRE_W);
     if (s < 0) frontWheel.rotation.y = Math.PI; // flip so the cover faces outward on the left
     local(fw, frontWheel);
