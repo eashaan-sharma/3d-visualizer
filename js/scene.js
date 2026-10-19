@@ -71,5 +71,24 @@ export function createStage(container) {
   // Watches the container itself, so it also fires when panels or the browser window change size.
   new ResizeObserver(resize).observe(container);
 
-  return { renderer, scene, camera, keyLight, ground, grid };
+  // Performance mode for weak GPUs: fewer pixels, no shadow pass, no clearcoat layer.
+  // Changing these switches shader features, so every material is flagged for recompiling.
+  function setPerformanceMode(on) {
+    renderer.setPixelRatio(on ? 1 : Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
+    renderer.shadowMap.enabled = !on;
+    keyLight.castShadow = !on;
+    scene.traverse((o) => {
+      for (const m of [o.material].flat()) {
+        if (!m) continue;
+        if (m.isMeshPhysicalMaterial) {
+          m.userData.clearcoat ??= m.clearcoat;
+          m.clearcoat = on ? 0 : m.userData.clearcoat;
+        }
+        m.needsUpdate = true;
+      }
+    });
+    resize();
+  }
+
+  return { renderer, scene, camera, setPerformanceMode };
 }

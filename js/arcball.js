@@ -12,7 +12,8 @@
 // and   camera.position = target + orient * (0, 0, distance)   (the camera looks down its -Z).
 import * as THREE from 'three';
 
-export const DEFAULT_VIEW = { position: [5.2, 2.2, 6.0], target: [0, 0.35, 0] };
+// Aimed a little to the right of the car so it sits clear of the control panel.
+export const DEFAULT_VIEW = { position: [6.3, 2.5, 6.0], target: [0.75, 0.3, -0.55] };
 const WORLD_UP = new THREE.Vector3(0, 1, 0);
 const MIN_DIST = 1.2, MAX_DIST = 25;
 

@@ -11,6 +11,7 @@ import { createDisplayModes } from './displayModes.js';
 import { createModelViewer } from './models.js';
 import { createActions } from './presentation.js';
 import { createTour } from './tour.js';
+import { createFpsCounter } from './fps.js';
 import { createUI } from './ui.js';
 
 const stage = createStage(document.getElementById('viewport'));
@@ -35,6 +36,7 @@ app.display.setRoot(car.root);
 app.models = createModelViewer(app, document.getElementById('model-info'));
 app.actions = createActions(app);
 app.tour = createTour(app, document.getElementById('tour'));
+app.fps = createFpsCounter(document.getElementById('fps'));
 app.ui = createUI(app);
 
 // Click a panel's title bar to fold it away.
@@ -53,6 +55,7 @@ function tick(now) {
   stage.scene.updateMatrixWorld(); // world = parent x local for every node, so the panel reads fresh values
   matrixPanel.update(dt);
   app.display.update();
+  app.fps.update(dt);
   stage.renderer.render(stage.scene, stage.camera);
 }
 stage.renderer.setAnimationLoop(tick);

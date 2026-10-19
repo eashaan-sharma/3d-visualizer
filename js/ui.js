@@ -73,6 +73,9 @@ export function createUI(app) {
   pres.add({ tour: () => toggleTour() }, 'tour').name('Guided tour (T)');
   pres.add({ reset: () => app.actions.resetAll() }, 'reset').name('Reset everything (R)');
   pres.add({ hide: () => app.actions.toggleUI() }, 'hide').name('Hide UI (H)');
+  pres.add({ perf: false }, 'perf').name('Performance mode').onChange((on) => app.stage.setPerformanceMode(on))
+    .domElement.title = 'For integrated graphics: pixel ratio 1, no shadows, no clearcoat. Kept by Reset.';
+  pres.add(app.fps.state, 'visible').name('Show FPS');
 
   function refresh() {
     gui.controllersRecursive().forEach((c) => c.updateDisplay());

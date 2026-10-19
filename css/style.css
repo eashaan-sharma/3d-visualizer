@@ -270,3 +270,19 @@ body .lil-gui.lil-root > .lil-title { font-size: 15px; font-weight: 700; }
 body .lil-gui.lil-root.lil-auto-place { max-height: calc(100vh - 210px); }
 body:has(#legend.collapsed) .lil-gui.lil-root.lil-auto-place { max-height: calc(100vh - 80px); }
 body:has(#tour:not([hidden])) .lil-gui.lil-root.lil-auto-place { max-height: calc(100vh - 260px); }
+
+#fps {
+  position: fixed;
+  top: 12px;
+  right: 370px;
+  padding: 4px 10px;
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #7CFC9A;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+#fps[hidden] { display: none; }
