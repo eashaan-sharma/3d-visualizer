@@ -60,8 +60,6 @@ export function createStage(container) {
 
   // Units are meters. A 40° vertical field of view is close to a normal camera lens.
   const camera = new THREE.PerspectiveCamera(40, 1, 0.05, 200);
-  camera.position.set(5.2, 2.4, 6.2);
-  camera.lookAt(0, 0.4, 0);
 
   function resize() {
     const w = container.clientWidth;

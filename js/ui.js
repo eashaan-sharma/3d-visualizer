@@ -24,9 +24,33 @@ export function createUI(app) {
   ex.add(app.explode.state, 'amount', 0, 1, 0.01).name('Explode').listen().onChange(() => app.explode.cancel());
   ex.add({ pit: () => app.explode.pitStop() }, 'pit').name('Pit stop! (P)');
 
+  const cam = gui.addFolder('Camera (arcball)');
+  const arc = app.arcball.state;
+  cam.add(arc, 'autoRotate').name('Auto-rotate (A)').listen();
+  cam.add(arc, 'autoRotateSpeed', 2, 60, 1).name('Rotate speed (°/s)');
+  cam.add(arc, 'showSphere').name('Show arcball sphere');
+  cam.add({ reset: () => { arc.autoRotate = false; app.arcball.reset(); } }, 'reset').name('Reset view');
+  // Any drag, scroll or pan pauses the turntable; only A (or the checkbox) restarts it.
+  app.arcball.onInteract = () => { arc.autoRotate = false; };
+
   function refresh() {
     gui.controllersRecursive().forEach((c) => c.updateDisplay());
   }
+
+  // Keyboard shortcuts. Ignored while typing in a text field.
+  const keys = {
+    a: () => { arc.autoRotate = !arc.autoRotate; },
+    d: () => { k.drive = !k.drive; },
+    p: () => app.explode.pitStop(),
+  };
+  window.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey || e.target.closest('input, textarea, select')) return;
+    const action = keys[e.key.toLowerCase()];
+    if (!action) return;
+    e.preventDefault();
+    action();
+    refresh();
+  });
 
   return { gui, refresh };
 }
