@@ -103,9 +103,9 @@ export function createTreePanel(el, onPick) {
 
   function highlight(node) {
     for (const [n, row] of rows) row.classList.toggle('active', n === node);
-    rows.get(node)?.scrollIntoView({ block: 'nearest' });
+    if (node) rows.get(node)?.scrollIntoView({ block: 'nearest' });
+    else el.querySelector('.tree-body').scrollTop = 0;
   }
 
-  el.querySelector('.panel-title').addEventListener('click', () => el.classList.toggle('collapsed'));
   return { build, highlight };
 }

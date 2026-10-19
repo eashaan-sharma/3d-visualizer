@@ -9,6 +9,8 @@ import { createSelection } from './selection.js';
 import { createMatrixPanel, createTreePanel } from './panels.js';
 import { createDisplayModes } from './displayModes.js';
 import { createModelViewer } from './models.js';
+import { createActions } from './presentation.js';
+import { createTour } from './tour.js';
 import { createUI } from './ui.js';
 
 const stage = createStage(document.getElementById('viewport'));
@@ -31,7 +33,14 @@ app.selection.onChange((node) => { matrixPanel.show(node); app.tree.highlight(no
 app.display = createDisplayModes(stage.scene);
 app.display.setRoot(car.root);
 app.models = createModelViewer(app, document.getElementById('model-info'));
+app.actions = createActions(app);
+app.tour = createTour(app, document.getElementById('tour'));
 app.ui = createUI(app);
+
+// Click a panel's title bar to fold it away.
+for (const title of document.querySelectorAll('.panel-title')) {
+  title.addEventListener('click', () => title.parentElement.classList.toggle('collapsed'));
+}
 
 let last = performance.now();
 function tick(now) {

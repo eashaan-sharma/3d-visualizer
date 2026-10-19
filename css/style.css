@@ -89,7 +89,7 @@ html, body {
 
 .panel-title::before { content: "▾ "; color: var(--muted); }
 .panel.collapsed .panel-title::before { content: "▸ "; }
-.panel.collapsed .tree-body { display: none; }
+.panel.collapsed > :not(.panel-title) { display: none; }
 .panel-title .hint { float: right; color: var(--muted); font-weight: 400; font-size: 0.85rem; }
 
 #tree-panel {
@@ -177,3 +177,96 @@ body.dropping::after {
   background: rgba(10, 12, 16, 0.6);
   pointer-events: none;
 }
+
+/* ---- Shortcut legend ---------------------------------------------------------------- */
+#legend {
+  right: 20px;
+  bottom: 20px;
+  width: 360px;
+  font-size: 0.85rem;
+}
+
+.legend-body {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr;
+  gap: 3px 8px;
+  margin: 0;
+  padding: 6px 12px 8px;
+}
+
+.legend-body dt {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: #111;
+  background: #d9dee8;
+  border-radius: 4px;
+  padding: 0 6px;
+  text-align: center;
+  align-self: start;
+}
+
+.legend-body dd { margin: 0; color: var(--text); }
+.legend-body dd.wide { grid-column: span 3; }
+
+/* ---- Guided tour caption ------------------------------------------------------------ */
+#tour {
+  right: 20px;
+  bottom: 20px;
+  width: min(540px, calc(100vw - 40px));
+  padding: 12px 18px 14px;
+  border-color: #ffd23f;
+  z-index: 2000; /* above lil-gui */
+}
+
+.tour-step { color: #ffd23f; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+#tour h2 { margin: 2px 0 6px; font-size: 1.6rem; }
+#tour p { margin: 0 0 10px; font-size: 1.1rem; line-height: 1.45; }
+.tour-buttons { display: flex; gap: 8px; }
+
+.tour-buttons button {
+  font: inherit;
+  font-size: 1rem;
+  padding: 6px 14px;
+  color: var(--text);
+  background: #222a36;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tour-buttons button:hover:not(:disabled) { background: #2d3746; }
+.tour-buttons button:disabled { opacity: 0.4; cursor: default; }
+.tour-buttons button:last-child { margin-left: auto; }
+
+/* While the tour runs, its caption takes the bottom of the screen. */
+body:has(#tour:not([hidden])) #legend { display: none; }
+
+/* ---- Hide UI (H): leave only the 3D view (and the tour caption) --------------------- */
+body.ui-hidden .ui,
+body.ui-hidden #title,
+body.ui-hidden .lil-gui.lil-root { display: none; }
+
+/* ---- lil-gui, sized for a projector ------------------------------------------------- */
+body .lil-gui {
+  --font-family: var(--font);
+  --font-size: 14px;
+  --input-font-size: 14px;
+  --widget-height: 26px;
+  --spacing: 5px;
+  --padding: 5px;
+  --name-width: 52%;
+  --background-color: rgba(16, 20, 27, 0.94);
+  --title-background-color: #1d2430;
+  --widget-color: #2a3240;
+  --hover-color: #343e4f;
+  --focus-color: #3b475a;
+  --number-color: #7fd3ff;
+  --string-color: #b5e48c;
+}
+
+body .lil-gui.lil-root > .lil-title { font-size: 15px; font-weight: 700; }
+
+/* Keep the control panel above the shortcut legend; it scrolls if it needs more room. */
+body .lil-gui.lil-root.lil-auto-place { max-height: calc(100vh - 210px); }
+body:has(#legend.collapsed) .lil-gui.lil-root.lil-auto-place { max-height: calc(100vh - 80px); }
+body:has(#tour:not([hidden])) .lil-gui.lil-root.lil-auto-place { max-height: calc(100vh - 260px); }

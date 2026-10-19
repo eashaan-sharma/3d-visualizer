@@ -2,6 +2,7 @@
 // (built-in samples, drag-and-drop, or the car re-imported from its own export).
 import * as THREE from 'three';
 import { parseOBJ } from './objLoader.js';
+import { exportOBJ } from './objExporter.js';
 
 export const CAR = 'F1 car (procedural, rigged)';
 export const SAMPLES = {
@@ -92,5 +93,11 @@ export function createModelViewer(app, infoEl) {
     app.ui.refresh();
   });
 
-  return { state, choose, showText, showCar };
+  // Export the car and immediately load the text back: the rigging-loss demo.
+  function reimportCar() {
+    state.model = 'Exported car';
+    showText(exportOBJ(app.car.root), 'f1-car.obj (re-imported)');
+  }
+
+  return { state, choose, showCar, reimportCar };
 }

@@ -1,10 +1,15 @@
-// Control panel (lil-gui). Each control simply writes into a state object that the
-// kinematics / explode / camera modules read every frame.
+// Control panel (lil-gui) and keyboard shortcuts. Each control simply writes into a state
+// object that the kinematics / explode / camera / display modules read every frame.
 import GUI from 'lil-gui';
 import { MODES } from './displayModes.js';
 import { DEFAULT_LIVERY } from './car/materials.js';
 import { CAR, SAMPLES } from './models.js';
 import { exportOBJ } from './objExporter.js';
+import { PRESETS } from './presentation.js';
+
+const RIGGING_TIP = 'An .obj file stores geometry only: vertices, normals, faces and named groups. '
+  + 'It has no place for the scene graph (parent/child links), pivots or joint axes. That rigging lives in our code, '
+  + 'so after a reload the parts come back as static pieces that cannot steer, spin or explode.';
 
 // Save text as a file through the browser's normal download.
 function download(text, filename) {
@@ -15,8 +20,10 @@ function download(text, filename) {
 }
 
 export function createUI(app) {
-  const gui = new GUI({ title: 'Controls', width: 330 });
+  const gui = new GUI({ title: 'Controls', width: 340 });
   const k = app.kinematics.state;
+  const arc = app.arcball.state;
+  const look = { livery: DEFAULT_LIVERY };
 
   const kin = gui.addFolder('Forward kinematics');
   kin.add(k, 'steer', -25, 25, 0.5).name('Steering angle (°)');
@@ -37,7 +44,6 @@ export function createUI(app) {
   ex.add({ pit: () => app.explode.pitStop() }, 'pit').name('Pit stop! (P)');
 
   const cam = gui.addFolder('Camera (arcball)');
-  const arc = app.arcball.state;
   cam.add(arc, 'autoRotate').name('Auto-rotate (A)').listen();
   cam.add(arc, 'autoRotateSpeed', 2, 60, 1).name('Rotate speed (°/s)');
   cam.add(arc, 'showSphere').name('Show arcball sphere');
@@ -45,40 +51,52 @@ export function createUI(app) {
   // Any drag, scroll or pan pauses the turntable; only A (or the checkbox) restarts it.
   app.arcball.onInteract = () => { arc.autoRotate = false; };
 
-  const disp = gui.addFolder('Display');
+  const views = gui.addFolder('Camera views (1-5)').close();
+  for (const [name, p] of Object.entries(PRESETS)) {
+    views.add({ go: () => app.actions.preset(name) }, 'go').name(`${name} (${p.key})`);
+  }
+
+  const disp = gui.addFolder('Display').close();
   const d = app.display.state;
   disp.add(d, 'mode', MODES).name('Mode').onChange(() => app.display.apply());
   disp.add(d, 'pivots').name('Show pivots').onChange(() => app.display.apply());
-  const paint = app.car.materials.paint;
-  const look = { livery: DEFAULT_LIVERY };
-  disp.addColor(look, 'livery').name('Livery colour').onChange((c) => paint.color.set(c));
+  disp.addColor(look, 'livery').name('Livery colour').onChange((c) => app.car.materials.paint.color.set(c));
 
-  const mdl = gui.addFolder('Model (.obj)');
-  const RIGGING_TIP = 'An .obj file stores geometry only: vertices, normals, faces and named groups. '
-    + 'It has no place for the scene graph (parent/child links), pivots or joint axes. That rigging lives in our code, '
-    + 'so after a reload the parts come back as static pieces that cannot steer, spin or explode.';
+  const mdl = gui.addFolder('Model (.obj)').close();
   mdl.add(app.models.state, 'model', [CAR, ...Object.keys(SAMPLES)]).name('Show').onChange((v) => app.models.choose(v));
   const exp = mdl.add({ exportCar: () => download(exportOBJ(app.car.root), 'f1-car.obj') }, 'exportCar').name('Export car as .obj');
-  const rel = mdl.add({ reload: () => reloadExportedCar() }, 'reload').name('Reload exported car');
+  const rel = mdl.add({ reload: () => { app.models.reimportCar(); refresh(); } }, 'reload').name('Reload exported car');
   for (const c of [exp, rel]) c.domElement.title = RIGGING_TIP;
   mdl.add({ hint: 'or drop an .obj file on the page' }, 'hint').name('Tip').disable();
 
-  function reloadExportedCar() {
-    app.models.state.model = 'Exported car';
-    app.models.showText(exportOBJ(app.car.root), 'f1-car.obj (re-imported)');
-    refresh();
-  }
+  const pres = gui.addFolder('Presentation').close();
+  pres.add({ tour: () => toggleTour() }, 'tour').name('Guided tour (T)');
+  pres.add({ reset: () => app.actions.resetAll() }, 'reset').name('Reset everything (R)');
+  pres.add({ hide: () => app.actions.toggleUI() }, 'hide').name('Hide UI (H)');
 
   function refresh() {
     gui.controllersRecursive().forEach((c) => c.updateDisplay());
   }
 
+  function toggleTour() {
+    if (app.tour.active) app.actions.resetAll();
+    else app.tour.start();
+  }
+
   // Keyboard shortcuts. Ignored while typing in a text field.
   const keys = {
-    a: () => { arc.autoRotate = !arc.autoRotate; },
-    d: () => { k.drive = !k.drive; },
+    r: () => app.actions.resetAll(),
     p: () => app.explode.pitStop(),
+    d: () => { k.drive = !k.drive; },
+    a: () => { arc.autoRotate = !arc.autoRotate; },
+    t: toggleTour,
+    h: () => app.actions.toggleUI(),
+    arrowright: () => app.tour.active && app.tour.next(),
+    arrowleft: () => app.tour.active && app.tour.back(),
+    escape: () => app.tour.active && app.actions.resetAll(),
   };
+  for (const [name, p] of Object.entries(PRESETS)) keys[p.key] = () => app.actions.preset(name);
+
   window.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey || e.target.closest('input, textarea, select')) return;
     const action = keys[e.key.toLowerCase()];
@@ -88,5 +106,5 @@ export function createUI(app) {
     refresh();
   });
 
-  return { gui, refresh };
+  return { gui, refresh, look };
 }
