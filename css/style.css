@@ -242,9 +242,11 @@ body.dropping::after {
 body:has(#tour:not([hidden])) #legend { display: none; }
 
 /* ---- Hide UI (H): leave only the 3D view (and the tour caption) --------------------- */
+/* !important because some panels set their own display (e.g. #tree-panel is a flex box),
+   and an ID rule would otherwise outrank this class rule. */
 body.ui-hidden .ui,
 body.ui-hidden #title,
-body.ui-hidden .lil-gui.lil-root { display: none; }
+body.ui-hidden .lil-gui.lil-root { display: none !important; }
 
 /* ---- lil-gui, sized for a projector ------------------------------------------------- */
 body .lil-gui {
