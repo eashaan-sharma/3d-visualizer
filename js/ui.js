@@ -100,14 +100,21 @@ export function createUI(app) {
   };
   for (const [name, p] of Object.entries(PRESETS)) keys[p.key] = () => app.actions.preset(name);
 
+  // Only fields you type into block shortcuts. A clicked checkbox or button keeps keyboard
+  // focus, and the shortcuts must still work after it (e.g. tick "DRS open", then press P).
+  const isTyping = (t) => t instanceof Element
+    && (t.matches('textarea, select, [contenteditable]') || (t.matches('input') && !['checkbox', 'button', 'range', 'color'].includes(t.type)));
+
+  // Capture phase (the final `true`): lil-gui stops key events from bubbling out of its
+  // controls, so a normal listener would never hear keys pressed while one has focus.
   window.addEventListener('keydown', (e) => {
-    if (e.ctrlKey || e.metaKey || e.altKey || e.target.closest('input, textarea, select')) return;
+    if (e.ctrlKey || e.metaKey || e.altKey || isTyping(e.target)) return;
     const action = keys[e.key.toLowerCase()];
     if (!action) return;
     e.preventDefault();
     action();
     refresh();
-  });
+  }, true);
 
   return { gui, refresh, look };
 }
