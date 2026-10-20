@@ -1,4 +1,4 @@
-# F1 Scene Graph Visualizer
+# Hierarchical Modelling and Articulation of a Procedural Car
 
 An interactive, browser-based model of a 2022-regulation Formula 1 car, built to teach the core ideas of 3D modelling. The car is generated procedurally in code as a scene graph of 24 named parts, each with its pivot in the right place. You can steer it, spin the wheels, open the DRS flap, pull it apart in an animated "pit stop", orbit around it with a hand-written quaternion arcball, click any part to see its live local and world matrices, and export it to `.obj` to see that the format keeps the geometry but loses the rigging. Everything runs locally in plain HTML, CSS and JavaScript modules (Three.js for rendering, lil-gui for the control panel), with no build step and no internet connection.
 

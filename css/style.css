@@ -152,9 +152,10 @@ html, body {
 .mp-info b { color: var(--text); }
 
 #model-info {
-  top: 16px;
-  left: 390px; /* right of the title, left of the control panel */
-  max-width: min(540px, calc(100vw - 740px));
+  /* Below the header row, between the scene graph panel and the control panel. */
+  top: 96px;
+  left: 320px;
+  max-width: min(540px, calc(100vw - 700px));
   padding: 10px 14px;
   font-size: 0.95rem;
   line-height: 1.4;
