@@ -14,7 +14,7 @@ const n4 = (v) => (Math.abs(v) < 5e-5 ? 0 : +v.toFixed(4)); // short numbers, no
 
 export function exportOBJ(root) {
   const out = [
-    '# F1 Scene Graph Visualizer: car exported as Wavefront .obj',
+    '# Hierarchical Modelling and Articulation of a Procedural Car: car exported as Wavefront .obj',
     '# Contains: positions (v), normals (vn), triangles (f v//vn), one object (o) per part.',
     '# Missing: hierarchy, pivots and joints. .obj has no way to store rigging.',
   ];
