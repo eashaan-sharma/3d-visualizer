@@ -8,7 +8,7 @@ export const PRESETS = {
   Side: { key: '2', position: [0.2, 0.9, 9.2], target: [0.2, 0.42, 0] },
   Top: { key: '3', position: [0.2, 10.5, 0], target: [0.2, 0, 0], up: [1, 0, 0] },
   'Rear 3/4': { key: '4', position: [-5.0, 2.0, 4.4], target: [-0.5, 0.4, 0] },
-  Cockpit: { key: '5', position: [-0.1, 0.93, 0], target: [3.0, 0.55, 0] },
+  Cockpit: { key: '5', position: [-0.25, 1.04, 0], target: [3.0, 0.5, 0] }, // just above and behind the helmet
 };
 
 export function createActions(app) {

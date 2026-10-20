@@ -27,7 +27,10 @@ const app = {
 };
 app.activeRoot = car.root; // what the picker and tree show (M8 swaps in loaded .obj models)
 app.selection = createSelection({ camera: stage.camera, dom: stage.renderer.domElement, getRoot: () => app.activeRoot });
-const matrixPanel = createMatrixPanel(document.getElementById('matrix-panel'));
+// The front wheels' extra "steerWrong" joint only matters while the wrong-order demo is on.
+const matrixPanel = createMatrixPanel(document.getElementById('matrix-panel'), {
+  showJoint: (j) => j.name !== 'steerWrong' || app.kinematics.state.wrongOrder,
+});
 app.tree = createTreePanel(document.getElementById('tree-panel'), (node) => app.selection.select(node));
 app.tree.build(car.root);
 app.selection.onChange((node) => { matrixPanel.show(node); app.tree.highlight(node); });

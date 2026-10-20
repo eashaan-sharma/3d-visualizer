@@ -88,7 +88,8 @@ export function createArcball({ camera, dom, overlay }) {
 
   dom.addEventListener('pointermove', (e) => {
     if (!drag) return;
-    if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 3) return; // ignore click jitter
+    // Ignore click jitter: under 4 px is a click (same threshold as selection.js), not a drag.
+    if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 4) return;
     if (!drag.moved) { drag.moved = true; anim = null; onInteract(); }
 
     if (drag.mode === 'rotate') {

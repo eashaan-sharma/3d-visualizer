@@ -27,7 +27,8 @@ function chainOf(node) {
   return chain;
 }
 
-export function createMatrixPanel(el) {
+// showJoint(joint) decides which joints are listed (lets main.js hide demo-only joints).
+export function createMatrixPanel(el, { showJoint = () => true } = {}) {
   el.innerHTML = `
     <h3 class="mp-name"></h3>
     <div class="mp-chain"></div>
@@ -60,7 +61,7 @@ export function createMatrixPanel(el) {
     product.multiplyMatrices(node.parent.matrixWorld, node.matrix);
     const err = Math.max(...product.elements.map((v, i) => Math.abs(v - node.matrixWorld.elements[i])));
     const joints = isPart(node)
-      ? node.userData.rig.joints.map((j) => `${j.name} ${(j.angle * RAD2DEG).toFixed(1)}° about ${j.axis.toUpperCase()}`).join(', ') || 'none (fixed part)'
+      ? node.userData.rig.joints.filter(showJoint).map((j) => `${j.name} ${(j.angle * RAD2DEG).toFixed(1)}° about ${j.axis.toUpperCase()}`).join(', ') || 'none (fixed part)'
       : 'none: loaded from .obj, which stores geometry but no rigging';
     q('.mp-info').innerHTML = `<b>Joints:</b> ${joints}<br><b>Check:</b> parent.world × local − world = ${err.toExponential(1)}`;
   }
